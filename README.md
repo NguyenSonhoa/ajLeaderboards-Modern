@@ -1,94 +1,234 @@
-# [ajLeaderboards](https://about.ajg0702.us/project/ajLeaderboards)
+<div align="center">
 
-ajLeaderboards is a plugin to allow you to create leaderboards for basically anything using PlaceholderAPI placeholders.
+<img src="https://capsule-render.vercel.app/api?type=waving&height=230&color=0:09090f,45:451080,100:00d9ff&text=ajLeaderboards%20Modern&fontColor=ffffff&fontSize=48&fontAlignY=38&desc=Native%20holograms.%20Private%20pages.%20Smooth%20motion.&descAlignY=59&animation=fadeIn" width="100%" alt="ajLeaderboards Modern banner" />
 
-![Features](https://ajg0702.us/img/plugins/header.php?r=1&text=Features)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=17&duration=2800&pause=900&color=BB6BFF&center=true&vCenter=true&width=760&lines=Modern+Paper+%2F+Leaf+leaderboards;Packet-only+Text+Display+holograms;Per-player+pages+%C2%B7+Java+%2B+Bedrock;Built+for+Minecraft+1.21.x)](https://git.io/typing-svg)
 
-- Supports server versions 1.8.x-1.21.x & 26.1.x and will (almost certainly) work fine on new MC versions without requiring an update.
-- Can be used to make leaderboards from basically any plugin, it just needs to have a PAPI placeholder that returns a number.
-- Can show player prefixes/suffixes (from Vault) on the leaderboard
-- Display leaderboards anywhere that PlaceholderAPI is supported (holograms / display entities, NPCs, etc.)
-- Display leaderboards on signs (built-in and fully customizable)
-- Display leaderboards with NPCs (using PAPI, [see wiki](https://wiki.ajg0702.us/ajleaderboards/setup/setup#7-optional-display-the-leaderboard-using-npcs))
-- Players' heads above signs
-- Players' heads on Armor Stands
-- MySQL supported (to make sure leaderboards are synced, the target placeholder must also be synced)
-- ["Extra" placeholders](https://wiki.ajg0702.us/ajLeaderboards/setup/extras) (allows you to display any placeholders' text alongside the leaderboard)
-- Timed leaderboards that reset automatically without effecting all-time stats (hourly, daily, monthly, etc.)
-- Folia Support
-- More features to come! (request them)
+[![CI](https://img.shields.io/github/actions/workflow/status/NguyenSonhoa/ajLeaderboards-Modern/gradle.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=BUILD)](https://github.com/NguyenSonhoa/ajLeaderboards-Modern/actions)
+[![Java 21](https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](https://adoptium.net/)
+[![Paper 1.21.x](https://img.shields.io/badge/Paper-1.21.x-F4F4F4?style=for-the-badge&logo=paper&logoColor=222222)](https://papermc.io/)
+[![PacketEvents](https://img.shields.io/badge/PacketEvents-2.13-00D9FF?style=for-the-badge)](https://github.com/retrooper/packetevents)
+[![GPL-3.0](https://img.shields.io/github/license/NguyenSonhoa/ajLeaderboards-Modern?style=for-the-badge&color=BB6BFF)](LICENSE)
 
-![Screenshots](https://ajg0702.us/img/plugins/header.php?text=Screenshots)
+**A modern fork of [ajLeaderboards](https://github.com/ajgeiss0702/ajLeaderboards), rebuilt around interactive native display entities.**
 
-![Leaderboard using holograms](https://ajg0702.us/img/plugins/ajleaderboards/1.png) <br/>
-A leaderboard displayed using holograms
+[Download Actions Build](https://github.com/NguyenSonhoa/ajLeaderboards-Modern/actions) · [Report Issue](https://github.com/NguyenSonhoa/ajLeaderboards-Modern/issues) · [Upstream Wiki](https://wiki.ajg0702.us/ajleaderboards/)
 
-![NPC leaderboard](https://ajg0702.us/img/plugins/ajleaderboards/2.png) <br/>
-A NPC leaderboard using [Citizens](https://www.spigotmc.org/resources/citizens.13811/)
+</div>
 
-![Sign leaderboard with heads](https://ajg0702.us/img/plugins/ajleaderboards/3.png?r=2) <br/>
-A sign leaderboard (using the built-in signs) with heads.
-(also supports Armor Stands, and the heads are optional)
+## `> signal`
 
-![Interactive hologram leaderboards](https://ajg0702.us/img/plugins/ajleaderboards/4.gif) <br/>
-Interactive hologram leaderboards using [DecentHolograms](https://modrinth.com/plugin/decentholograms)' pages feature. <br/>
-Basically, each timed type is a separate page, and the pages are switched by clicking.
+```text
+Runtime    Java 21 · Paper/Leaf 1.21.x
+Display    PacketEvents Text Display + Item Display
+Input      Ray targeting · private page state · left-click navigation
+Bridge     PlaceholderAPI · Vault · LuckPerms · Geyser/Floodgate
+Storage    MySQL · H2 · SQLite
+Mission    Keep the proven ajLeaderboards core. Modernize the player-facing layer.
+```
 
-![Setup](https://ajg0702.us/img/plugins/header.php?text=Setup)
+The original project already handles flexible PlaceholderAPI leaderboards, timed resets, signs, player heads, storage, and rich placeholders. This fork keeps that foundation while adding a native hologram runtime that does not require FancyHolograms, DecentHolograms, or persistent world entities.
 
-**You must have [PlaceholderAPI](https://www.spigotmc.org/resources/placeholderapi.6245/) installed!**
+## `> upstream delta`
 
-Setup is pretty straightforward.
+| System | Original ajLeaderboards | Modern fork |
+|:--|:--|:--|
+| Hologram display | External hologram plugins / PAPI output | Native packet-only Text and Item Displays |
+| Board rotation | External page systems | Built-in timed slide rotation |
+| Viewer pages | Shared external state | Private page state per player |
+| Interaction | Depends on display plugin | Full-hologram ray target + left click |
+| Timer | Not part of native display runtime | Animated Item or Text timer with background |
+| Motion | External implementation | Stagger, slide, smooth scale, fade-in/out |
+| Personal data | PAPI where supported | Every viewer receives individually parsed text |
+| Bedrock UX | No native specialization | Geyser/Floodgate subtitle prompt |
+| Runtime target | Broad legacy support | Java 21 and modern Paper/Leaf 1.21.x |
+| Build | Upstream pipeline | Portable PacketEvents dependency + JDK 21 CI |
 
-You just use the `/ajLeaderboards add` command to start tracking a placeholder that returns a numberical value (a number).
-Then, as players join, they will be added to the leaderboard.
+## `> hologram engine`
 
-To display the leaderboard, you use the [PlaceholderAPI LB placeholders](https://wiki.ajg0702.us/ajleaderboards/setup/placeholders),
-or use the [built-in signs](https://wiki.ajg0702.us/ajLeaderboards/setup/#4-optional-display-the-leaderboard-using-signs).
+### Packet-only displays
 
-For a more detailed (and explained) setup process, including the exact requirements for the placeholder you put in `/ajlb add`,
-check out the [setup guide on the wiki](https://wiki.ajg0702.us/ajleaderboards/setup/setup).
+- Spawns Text Display and Item Display entities only through packets.
+- Saves no display entities into the world.
+- Renders viewer-specific placeholders, rank, value, and footer text.
+- Supports `FIXED`, `CENTER`, `VERTICAL`, and `HORIZONTAL` billboards.
+- Supports legacy color codes, `&#RRGGBB`, bold, reset, and strikethrough.
+- Applies full-bright metadata to display entities.
 
-![Support](https://ajg0702.us/img/plugins/header.php?text=Support)
+### Rotation and motion
 
-Before trying to get support, please [read the FAQ](https://wiki.ajg0702.us/ajLeaderboards/faq)
+- Rotates any number of leaderboard slides at one location.
+- Resets every viewer to page 1 whenever the timer changes the top.
+- Staggers line entrances and exits.
+- Smoothly scales and fades all lines, timer foreground, and timer background.
+- Uses smoothstep easing for softer starts and stops.
+- Offers Item Display and Text Display timer modes.
 
-After reading the FAQ, if you have any questions, suggestions, or issues with the plugin, please contact me on any of the below methods:
+### Private pagination
 
-- [Discord](https://discord.gg/GXv2F5sXCx)
-- [Spigot PM](https://www.spigotmc.org/conversations/add?to=ajgeiss0702&title=ajLeaderboards%20support)
-- [Spigot discussion section](https://www.spigotmc.org/threads/ajleaderboards.471179/)
-- [Email](mailto:plugin-support@ajg0702.us)
+- Defines multiple pages inside each slide.
+- Keeps page index private per viewer.
+- Targets the entire hologram from title through rewards and footer.
+- Switches page when the targeting player left-clicks.
+- Shows Java players a packet-only mounted Text Display tip.
+- Shows Geyser/Floodgate players a configurable subtitle.
+- Restores the tip mount while players move or server passenger packets resync.
 
-(Discord is preferred and the quickest way to get a response)
+## `> requirements`
 
-AI Support is also available on the Discord server, which you can get instant support from. It is able to answer the vast majority of questions and solve most issues that people ask about in support. <br/>
-AI Support is always optional, and you do not need to use it if you don't want to. <br/>
-**PLEASE** use my AI support instead of a public chatbot such as ChatGPT or Gemini. Public ones make stuff up a **lot** more often than mine does, since they do not have direct access to the wiki.
-My AI support has direct access to the wiki, which means it has the most up-to-date information and recommendations.
+| Dependency | Requirement |
+|:--|:--|
+| Java | 21 |
+| Server | Paper-compatible 1.21.x; Leaf supported |
+| PlaceholderAPI | Required |
+| PacketEvents | 2.13.x required for native holograms |
+| Vault | Optional prefixes/suffixes |
+| Geyser/Floodgate | Optional Bedrock subtitle detection |
 
-![Pre-Releases](https://ajg0702.us/img/plugins/header.php?text=Pre-Releases)
+## `> quick config`
 
-Pre-Releases (also known as dev builds) are builds of the plugin from the `dev` branch,
-which may contain unstable and/or untested changes. <br/>
-You can download them on [Modrinth](https://modrinth.com/plugin/ajleaderboards/versions)
-and [Voxel.shop](https://voxel.shop/product/2726/ajleaderboards/updates) (formerly Polymart).
-They are not available on Spigot because Spigot does not allow a separate release channel for them.
+Native holograms live under `leaderboard-holograms` in `config.yml`.
 
+```yaml
+leaderboard-holograms:
+  example:
+    enabled: true
+    duration-seconds: 10
+    scale: 1.0
+    line-spacing: 0.3
+    billboard: CENTER
+    text-shadow: true
+    see-through: false
 
-Make sure you download it from the "Versions" or "Updates" tab, because if you download from the main download button,
-you will probably get the latest full release instead of the latest Pre-Release. <br/>
-The version you download should have a build number on the end of the version name (e.g. `2.10.1-b320`).
-If this build number is missing from the version name or the jar name, it is not a Pre-Release.
+    animation:
+      duration-ticks: 10
+      line-delay-ticks: 1
+      slide-distance: 1.5
+      scale-duration-ticks: 10
+      transition-scale: 0.65
 
+    pagination:
+      tip: "&aLeft click to change page"
+      bedrock-subtitle: "&aPress attack to change page"
+      tip-scale: 0.7
+      tip-offset:
+        x: 0.0
+        y: 0.5
+        z: 0.0
+      target-distance: 12.0
+      target-radius: 1.5
 
-<details>
-<summary>bStats</summary>
+    bar:
+      type: TEXT
+      text: "&a&m              "
+      background-text: "&8&m              "
+      background-offset-z: 0.1
+      text-height: 1.0
+      max-width: 2.0
+      auto-position: true
+      gap: 0.15
+      offset-y: 0.0
 
-This plugin collects anonymous usage information via [bStats](https://bstats.org/plugin/bukkit/ajLeaderboards/9338). It can be disabled in bStats' config file.
+    location:
+      world: world
+      x: 0.5
+      y: 80.0
+      z: 0.5
+      yaw: 0.0
+      pitch: 0.0
 
-![bStats](https://bstats.org/signatures/bukkit/ajLeaderboards.svg)
+    slides:
+      - pages:
+          - lines:
+              - "&#00D9FF&lTOP EXAMPLE"
+              - "&e1. &f%some_player_placeholder%"
+          - lines:
+              - "&#00D9FF&lTOP EXAMPLE"
+              - "&e2. &fSecond page"
+```
 
-</details>
+### Timer positioning
 
-Some icons made by authors from [www.flaticon.com](https://www.flaticon.com)
+```yaml
+bar:
+  auto-position: true
+  gap: 0.15
+  offset-y: 0.0
+```
+
+`auto-position: true` places the timer below the longest page. `offset-y` then acts as an additional vertical adjustment. Set `auto-position: false` to position the timer directly from the hologram origin.
+
+### Tip positioning
+
+```yaml
+pagination:
+  tip-offset:
+    x: 0.0 # left / right
+    y: 0.5 # down / up
+    z: 0.0 # back / forward
+```
+
+The Java tip uses local Text Display translation after mounting, so its offset stays stable while the player moves.
+
+## `> command deck`
+
+| Command | Purpose |
+|:--|:--|
+| `/ajleaderboards hologram create <id> <board>` | Create a basic native hologram |
+| `/ajleaderboards hologram movehere <id>` | Persist the hologram at your current location |
+| `/ajleaderboards hologram respawn [id]` | Respawn one or every native hologram |
+| `/ajleaderboards hologram remove <id>` | Remove a native hologram config |
+| `/ajleaderboards hologram list` | List configured holograms |
+| `/ajleaderboards reload` | Reload config and respawn native holograms |
+
+`movehere` reloads the disk config before editing, saves the new location, reloads again, and verifies the persisted coordinates before reporting success.
+
+## `> retained core`
+
+- Numeric PlaceholderAPI leaderboard sources
+- All-time and timed statistics
+- Automatic hourly, daily, weekly, monthly, and custom resets
+- MySQL, H2, and SQLite storage
+- Built-in signs, player heads, and Armor Stand heads
+- Vault prefix/suffix integration
+- Raw, formatted, relative, time, total, and extra placeholders
+- Existing ajLeaderboards board management commands and API
+- Folia metadata and inherited upstream integrations
+
+Use the [upstream wiki](https://wiki.ajg0702.us/ajleaderboards/) for original board tracking, placeholders, databases, signs, and reset behavior. The native hologram systems documented here belong to this fork.
+
+## `> build pipeline`
+
+```bash
+git clone https://github.com/NguyenSonhoa/ajLeaderboards-Modern.git
+cd ajLeaderboards-Modern
+./gradlew shadowJar
+```
+
+Artifact:
+
+```text
+build/libs/ajLeaderboards-2.11.0.jar
+```
+
+GitHub Actions uses JDK 21 and uploads the shaded plugin JAR after every successful build.
+
+## `> lineage`
+
+| Credit | Signal |
+|:--|:--|
+| [ajgeiss0702](https://github.com/ajgeiss0702) | Original ajLeaderboards project and core implementation |
+| [NguyenSonhoa](https://github.com/NguyenSonhoa) | Modern fork, packet holograms, interaction, pagination, animation, and Bedrock UX |
+
+This repository preserves the upstream [GPL-3.0 license](LICENSE). It is an independent fork, not the official upstream support channel.
+
+> **Good mechanics are discovered. Great mechanics are refined.**
+
+<div align="center">
+
+[![Repository](https://img.shields.io/badge/GitHub-ajLeaderboards_Modern-171723?style=for-the-badge&logo=github&logoColor=white)](https://github.com/NguyenSonhoa/ajLeaderboards-Modern)
+[![Developer](https://img.shields.io/badge/Developer-NguyenSonhoa-BB6BFF?style=for-the-badge&logo=github&logoColor=white)](https://github.com/NguyenSonhoa)
+
+<img src="https://capsule-render.vercel.app/api?type=waving&height=110&section=footer&color=0:09090f,45:451080,100:00d9ff" width="100%" alt="Footer" />
+
+</div>
