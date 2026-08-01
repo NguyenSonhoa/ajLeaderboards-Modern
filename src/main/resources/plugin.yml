@@ -1,0 +1,18 @@
+name: ajLeaderboards
+version: "@VERSION@"
+main: us.ajg0702.leaderboards.LeaderboardPlugin
+folia-supported: true
+author: ajgeiss0702
+depend: [PlaceholderAPI]
+softdepend: [Vault, SkinsRestorer, packetevents]
+description: Leaderboards for your server
+api-version: '1.21.4'
+commands:
+   ajleaderboards:
+      aliases: [ajlb, ajl, alb]
+      description: Commands for ajLeaderboards
+      permission: ajleaderboards.use
+permissions:
+   ajleaderboards.use:
+      description: Allows you to set up the plugin
+      default: op

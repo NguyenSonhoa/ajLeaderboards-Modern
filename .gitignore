@@ -1,0 +1,13 @@
+target
+bin/
+/.idea/
+/.gradle/
+/build/
+build
+.DS_Store
+identifier.sqlite
+cache.mv.db
+.project
+.classpath
+.settings/
+node_modules
