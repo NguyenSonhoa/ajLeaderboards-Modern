@@ -269,8 +269,9 @@ public final class ResetBar implements Listener {
             float fade = transitionProgress(outgoingStart);
             float minimum = (float) config.node("animation", "transition-scale").getDouble(0.65);
             float transition = minimum + (1 - minimum) * fade;
-            updateTransition(transition, fade);
-            updateBar(currentBarWidth(), transition, fade);
+            boolean transitioning = fade < 1;
+            if (transitioning) updateTransition(transition, fade);
+            updateBar(currentBarWidth(), transition, fade, transitioning);
         }
 
         private void animate(int index, boolean in) {
@@ -461,21 +462,18 @@ public final class ResetBar implements Listener {
         }
 
         private void updateBar(float width) {
-            updateBar(width, 1, 1);
+            updateBar(width, 1, 1, false);
         }
 
-        private void updateBar(float width, float transition, float fade) {
+        private void updateBar(float width, float transition, float fade, boolean transitioning) {
             if (textBar()) {
-                String text = color(config.node("bar", "text").getString("&a&m                    "));
                 float height = (float) config.node("bar", "text-height").getDouble(1);
                 byte opacity = opacity(fade);
                 for (Player player : location.getWorld().getPlayers()) {
-                    PacketDisplay.textBarTransform(player, barId, text, billboard,
-                            width * transition, height * transition, 0, opacity);
-                    PacketDisplay.textBarTransform(player, barBackgroundId,
-                            color(config.node("bar", "background-text").getString("&8&m                    ")),
-                            billboard, maxWidth * transition, height * transition,
-                            (float) config.node("bar", "background-offset-z").getDouble(0.1), opacity);
+                    PacketDisplay.textBarTransform(player, barId,
+                            width * transition, height * transition, opacity);
+                    if (transitioning) PacketDisplay.textBarTransform(player, barBackgroundId,
+                            maxWidth * transition, height * transition, opacity);
                 }
                 return;
             }
@@ -505,8 +503,7 @@ public final class ResetBar implements Listener {
             byte opacity = opacity(fade);
             for (Player player : location.getWorld().getPlayers()) {
                 for (int i = 0; i < lineIds.size(); i++) {
-                    PacketDisplay.textTransform(player, lineIds.get(i), textFor(player, i), scale * transition,
-                            billboard, shadow, seeThrough, opacity);
+                    PacketDisplay.textTransform(player, lineIds.get(i), scale * transition, opacity);
                 }
             }
         }

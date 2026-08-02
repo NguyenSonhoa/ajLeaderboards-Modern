@@ -75,17 +75,9 @@ final class PacketDisplay {
         send(player, new WrapperPlayServerEntityMetadata(id, data));
     }
 
-    static void textTransform(Player player, int id, String text, float scale,
-                              Display.Billboard billboard, boolean shadow, boolean seeThrough,
-                              byte opacity) {
-        List<EntityData<?>> data = display(0, 0,
-                new Vector3f(scale, scale, scale), billboard);
-        data.add(new EntityData<>(23, EntityDataTypes.COMPONENT, jsonText(text)));
-        data.add(new EntityData<>(24, EntityDataTypes.INT, 2000));
-        data.add(new EntityData<>(25, EntityDataTypes.INT, 0));
+    static void textTransform(Player player, int id, float scale, byte opacity) {
+        List<EntityData<?>> data = transform(new Vector3f(scale, scale, scale));
         data.add(new EntityData<>(26, EntityDataTypes.BYTE, opacity));
-        data.add(new EntityData<>(27, EntityDataTypes.BYTE,
-                (byte) ((shadow ? 1 : 0) | (seeThrough ? 2 : 0))));
         send(player, new WrapperPlayServerEntityMetadata(id, data));
     }
 
@@ -123,15 +115,9 @@ final class PacketDisplay {
         send(player, new WrapperPlayServerEntityMetadata(id, data));
     }
 
-    static void textBarTransform(Player player, int id, String text, Display.Billboard billboard,
-                                 float width, float height, float translationZ, byte opacity) {
-        List<EntityData<?>> data = display(0, 0, translationZ,
-                new Vector3f(width, height, 1), billboard);
-        data.add(new EntityData<>(23, EntityDataTypes.COMPONENT, jsonText(text)));
-        data.add(new EntityData<>(24, EntityDataTypes.INT, 2000));
-        data.add(new EntityData<>(25, EntityDataTypes.INT, 0));
+    static void textBarTransform(Player player, int id, float width, float height, byte opacity) {
+        List<EntityData<?>> data = transform(new Vector3f(width, height, 1));
         data.add(new EntityData<>(26, EntityDataTypes.BYTE, opacity));
-        data.add(new EntityData<>(27, EntityDataTypes.BYTE, (byte) 0));
         send(player, new WrapperPlayServerEntityMetadata(id, data));
     }
 
@@ -177,6 +163,15 @@ final class PacketDisplay {
         data.add(new EntityData<>(15, EntityDataTypes.BYTE, billboard(billboard)));
         data.add(new EntityData<>(16, EntityDataTypes.INT, 0x00F000F0));
         data.add(new EntityData<>(17, EntityDataTypes.FLOAT, 64F));
+        return data;
+    }
+
+    private static List<EntityData<?>> transform(Vector3f scale) {
+        List<EntityData<?>> data = new ArrayList<>();
+        data.add(new EntityData<>(8, EntityDataTypes.INT, 0));
+        data.add(new EntityData<>(9, EntityDataTypes.INT, 1));
+        data.add(new EntityData<>(10, EntityDataTypes.INT, 1));
+        data.add(new EntityData<>(12, EntityDataTypes.VECTOR3F, scale));
         return data;
     }
 
