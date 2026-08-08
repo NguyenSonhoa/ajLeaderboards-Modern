@@ -156,6 +156,9 @@ public final class ResetBar implements Listener {
         private final boolean seeThrough;
         private final List<Integer> lineIds = new ArrayList<>();
         private final List<String> renderedLines = new ArrayList<>();
+        private List<String> resolvedSlideLines = List.of();
+        private final Map<Integer, List<String>> resolvedPageLines = new java.util.HashMap<>();
+        private final Map<UUID, List<String>> playerSlideLines = new java.util.HashMap<>();
         private final boolean[] entered;
         private final boolean[] exited;
         private BukkitTask task;
@@ -290,8 +293,10 @@ public final class ResetBar implements Listener {
         }
 
         private String textFor(Player player, int index) {
-            String text = linesFor(player).get(index);
-            if (customSlides()) return color(PlaceholderAPI.setPlaceholders(player, text));
+            if (customSlides()) return playerSlideLines.computeIfAbsent(player.getUniqueId(), ignored ->
+                    (paged() ? linesFor(player) : resolvedSlideLines).stream().map(text -> text.contains("%")
+                            ? color(PlaceholderAPI.setPlaceholders(player, text)) : text).toList()).get(index);
+            String text = renderedLines.get(index);
             if (index != renderedLines.size() - 1) return text;
             return color(PlaceholderAPI.setPlaceholders(player, text.replace("{player}", player.getName())
                     .replace("{player_position}", "%ajlb_position_" + currentBoard + "_alltime%")
@@ -300,10 +305,11 @@ public final class ResetBar implements Listener {
         }
 
         private List<String> linesFor(Player player) {
-            if (!paged()) return renderedLines;
+            if (!paged()) return resolvedSlideLines;
             List<List<String>> slidePages = pages.get(boardIndex);
             int page = Math.min(playerPages.getOrDefault(player.getUniqueId(), 0), slidePages.size() - 1);
-            List<String> lines = new ArrayList<>(slidePages.get(page));
+            List<String> lines = new ArrayList<>(resolvedPageLines.computeIfAbsent(page, ignored ->
+                    slidePages.get(page).stream().map(text -> color(PlaceholderAPI.setPlaceholders(null, text))).toList()));
             while (lines.size() < lineIds.size()) lines.add("");
             return lines;
         }
@@ -338,6 +344,7 @@ public final class ResetBar implements Listener {
         private void nextPage(Player player) {
             List<List<String>> slidePages = pages.get(boardIndex);
             playerPages.compute(player.getUniqueId(), (uuid, page) -> (page == null ? 1 : page + 1) % slidePages.size());
+            playerSlideLines.remove(player.getUniqueId());
             for (int i = 0; i < lineIds.size(); i++) PacketDisplay.text(player, lineIds.get(i),
                     textFor(player, i), scale, billboard, shadow, seeThrough, 0, 0, (byte) -1);
         }
@@ -536,10 +543,14 @@ public final class ResetBar implements Listener {
 
         private void renderBoard() {
             renderedLines.clear();
+            playerSlideLines.clear();
+            resolvedPageLines.clear();
             if (customSlides()) {
                 if (paged()) renderedLines.addAll(pages.get(boardIndex).getFirst());
                 else renderedLines.addAll(slides.get(boardIndex));
                 while (renderedLines.size() < lineIds.size()) renderedLines.add("");
+                resolvedSlideLines = renderedLines.stream()
+                        .map(text -> color(PlaceholderAPI.setPlaceholders(null, text))).toList();
                 return;
             }
             String[] parts = boards.get(boardIndex).split("\\|", -1);
